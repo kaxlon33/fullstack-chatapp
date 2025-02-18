@@ -1,4 +1,4 @@
-import Sidebar from "../components/Siderbar.jsx";
+import Sidebar from "../components/Sidebar.jsx";
 import { useChatStore } from "../store/useChatStore";
 import NoChatSelected from "../components/NoChatSelected.jsx";
 import ChatContainer from "../components/ChatContainer.jsx";
