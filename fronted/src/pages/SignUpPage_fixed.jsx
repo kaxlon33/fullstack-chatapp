@@ -36,6 +36,8 @@ const SignUpPage = () => {
       const response = await signup(formData);
       // Optionally use response if needed
       toast.success("Signup successful!");
+      // Reset form fields to give visual confirmation of success
+      setFormData({ fullname: "", email: "", password: "" });
     } catch (error) {
       const message = error?.response?.data?.message || "Signup failed. Please try again.";
       toast.error(message);
