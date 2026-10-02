@@ -95,12 +95,22 @@ export const updateProfile = async (req, res) => {
             return res.status(400).json({ message: "Profile picture is required" });
         }
         const uploadResponse = await cloudinary.uploader.upload(profilePic);
-        const updatedUser = await User.findByIdAndUpdate(userId , {profilePic: uploadResponse.secure_url} , {new: true});
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { profilePic: uploadResponse.secure_url },
+            { new: true }
+        );
 
-        // Convert Mongoose document to plain object if needed
-        const userObj = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
-        // Remove sensitive fields before responding
-        const { password, __v, ...safeUser } = userObj;
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        // Build a DTO containing only the fields that should be exposed via the API
+        const safeUser = {
+            _id: updatedUser._id,
+            fullname: updatedUser.fullname,
+            email: updatedUser.email,
+            profilePic: updatedUser.profilePic,
+        };
         res.status(200).json(safeUser);
 
     }catch(error){
