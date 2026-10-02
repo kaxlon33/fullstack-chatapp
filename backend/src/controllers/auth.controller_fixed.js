@@ -116,7 +116,11 @@ export const checkAuth = (req, res) => {
       if (!req.user) {
         return res.status(401).json({ message: "Unauthorized: User not authenticated" });
       }
-      res.status(200).json(req.user);
+      // Ensure we are working with a plain object
+      const userObj = req.user.toObject ? req.user.toObject() : req.user;
+      // Remove sensitive fields before responding
+      const { password, __v, ...safeUser } = userObj;
+      res.status(200).json(safeUser);
     } catch (error) {
       console.log("Error in checkAuth controller:", error.message);
       res.status(500).json({ message: "Internal Server Error User" });
