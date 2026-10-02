@@ -101,14 +101,21 @@ const seedUsers = [
 ];
 
 const seedDatabase = async () => {
+  let session;
   try {
     await connectDB();
-
-    await User.insertMany(seedUsers);
+    session = await User.db.startSession();
+    await session.withTransaction(async () => {
+      await User.insertMany(seedUsers, { session });
+    });
     console.log("Database seeded successfully");
   } catch (error) {
     console.error("Error seeding database:", error);
     process.exit(1);
+  } finally {
+    if (session) {
+      await session.endSession();
+    }
   }
 };
 
